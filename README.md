@@ -1,6 +1,6 @@
-# HM-Q Hyperlocal Commerce Platform
+# HM-Q Hyperlocal Commerce OS & Platform (V.0.0.2.4)
 
-A high-performance, multi-tenant hyperlocal WhatsApp commerce platform supporting **Dual Deployment Architecture** from a single unified codebase.
+A high-performance, multi-tenant hyperlocal commerce operating system supporting **Dual Deployment Architecture**, unified headless API Gateway (`/api/v1/*`), in-store POS cashier terminals, delivery fleet logistics, merchant SaaS tiers, and n8n webhook automation from a single unified codebase.
 
 ---
 
@@ -21,25 +21,38 @@ HM-Q can be deployed using either of two official production methods:
 
 ---
 
+## 🛠️ Commerce OS Core Capabilities
+
+1. **Unified Developer REST Gateway (`/api/v1/*`)**: Standardized endpoints for Flutter, React Native, iOS, Android, and external ERPs.
+2. **Developer API Key Authentication & Scopes**: Production/Test environment key management, rate limits (RPM), IP whitelisting, and instant key revocation.
+3. **Delivery Rider Fleet Logistics**: Live online/busy/offline duty toggles, order assignment, COD cash settlement tracking, and rider ratings.
+4. **Point of Sale (POS) Cashier Terminal**: Fast barcode lookup, itemized billing, 5% GST tax calculation, and UPI QR code thermal receipt generator.
+5. **Merchant SaaS Tiers & Subscriptions**: Configurable monthly/yearly merchant onboarding plans, commission rates, and product catalog limits.
+6. **Customer Feedback & Review Moderation**: Real-time moderation pipeline with merchant direct responses and verified buyer badges.
+7. **Webhook Dispatcher**: HMAC-SHA256 signed event triggers for n8n, Evolution API, and external webhook listeners.
+
+---
+
 ## 📖 Complete Documentation Index
 
 All production guides and operational documentation are available in the **[`/docs/`](./docs/README.md)** directory:
 
-1. [**Documentation Overview**](./docs/README.md)
-2. [**Installation Guide**](./docs/INSTALLATION.md)
-3. [**Server Requirements**](./docs/SERVER_REQUIREMENTS.md)
-4. [**Environment Variables Reference**](./docs/ENVIRONMENT_VARIABLES.md)
-5. [**Static File Manager Deployment**](./docs/DEPLOYMENT_STATIC_FILE_MANAGER.md)
-6. [**Node.js SSR Deployment**](./docs/DEPLOYMENT_NODE_SSR.md)
-7. [**aaPanel Complete Deployment Guide**](./docs/AAPANEL_DEPLOYMENT.md)
-8. [**Database Setup & Architecture**](./docs/DATABASE_SETUP.md)
-9. [**n8n Workflow Automation Setup**](./docs/N8N_SETUP.md)
-10. [**WhatsApp Integration Guide**](./docs/WHATSAPP_SETUP.md)
-11. [**Payment & UPI Setup**](./docs/PAYMENT_SETUP.md)
-12. [**Backup & Disaster Recovery**](./docs/BACKUP_RESTORE.md)
-13. [**Update & Upgrade Guide**](./docs/UPDATE.md)
-14. [**Troubleshooting & Issues**](./docs/TROUBLESHOOTING.md)
-15. [**Production Deployment Checklist**](./docs/DEPLOYMENT_CHECKLIST.md)
+1. [**Production Audit & Verification Report**](./docs/21-PRODUCTION-AUDIT-REPORT.md)
+2. [**REST API Reference & Gateway Manual**](./docs/18-API-REFERENCE.md)
+3. [**Installation Guide**](./docs/INSTALLATION.md)
+4. [**Server Requirements**](./docs/SERVER_REQUIREMENTS.md)
+5. [**Environment Variables Reference**](./docs/ENVIRONMENT_VARIABLES.md)
+6. [**Static File Manager Deployment**](./docs/DEPLOYMENT_STATIC_FILE_MANAGER.md)
+7. [**Node.js SSR Deployment**](./docs/DEPLOYMENT_NODE_SSR.md)
+8. [**aaPanel Complete Deployment Guide**](./docs/AAPANEL_DEPLOYMENT.md)
+9. [**Database Setup & Architecture**](./docs/DATABASE_SETUP.md)
+10. [**n8n Workflow Automation Setup**](./docs/N8N_SETUP.md)
+11. [**WhatsApp Integration Guide**](./docs/WHATSAPP_SETUP.md)
+12. [**Payment & UPI Setup**](./docs/PAYMENT_SETUP.md)
+13. [**Backup & Disaster Recovery**](./docs/BACKUP_RESTORE.md)
+14. [**Update & Upgrade Guide**](./docs/UPDATE.md)
+15. [**Troubleshooting & Issues**](./docs/TROUBLESHOOTING.md)
+16. [**Production Deployment Checklist**](./docs/DEPLOYMENT_CHECKLIST.md)
 
 ---
 

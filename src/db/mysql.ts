@@ -17,12 +17,17 @@ let isConnected = false;
 let lastError = '';
 
 export function getDbConfig() {
+  const connectionType = process.env.DB_CONNECTION || 'json';
   const host = process.env.DB_HOST || process.env.MYSQL_HOST || '';
   const port = parseInt(process.env.DB_PORT || process.env.MYSQL_PORT || '3306', 10);
   const database = process.env.DB_DATABASE || process.env.MYSQL_DATABASE || 'hmqin';
   const user = process.env.DB_USERNAME || process.env.MYSQL_USER || 'root';
   const password = process.env.DB_PASSWORD || process.env.MYSQL_PASSWORD || '';
-  const connectionType = process.env.DB_CONNECTION || (host ? 'mysql' : 'json');
+
+  // Only attempt MySQL if explicitly requested via DB_CONNECTION=mysql or if a remote DB_HOST is provided
+  const isExplicitlyMysql = connectionType.toLowerCase() === 'mysql';
+  const hasValidHost = !!(host && host.trim().length > 0 && host !== 'none' && host !== 'disabled');
+  const isConfigured = isExplicitlyMysql && hasValidHost;
 
   return {
     host,
@@ -30,8 +35,8 @@ export function getDbConfig() {
     database,
     user,
     password,
-    connectionType,
-    isConfigured: !!(host && host.trim().length > 0),
+    connectionType: isConfigured ? 'mysql' : 'json',
+    isConfigured,
   };
 }
 
@@ -39,7 +44,7 @@ export async function initMysqlPool(): Promise<boolean> {
   const config = getDbConfig();
   if (!config.isConfigured) {
     isConnected = false;
-    lastError = 'DB_HOST not set in environment. Running in JSON data store mode.';
+    lastError = '';
     return false;
   }
 
@@ -53,7 +58,7 @@ export async function initMysqlPool(): Promise<boolean> {
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
-      connectTimeout: 4000,
+      connectTimeout: 3000,
     });
 
     // Test connection with a quick ping
@@ -71,7 +76,8 @@ export async function initMysqlPool(): Promise<boolean> {
   } catch (err: any) {
     isConnected = false;
     lastError = err.message || 'Connection failed';
-    console.warn(`[MySQL] Connection failed (${lastError}). Falling back to local data store file.`);
+    // Clean, silent fallback to high-performance JSON store
+    console.log(`[Database] Running on local JSON data store (${lastError}).`);
     return false;
   }
 }

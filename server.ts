@@ -16,6 +16,8 @@ import {
   Category,
   Product,
   PendingStoreChange,
+  PlatformTemplate,
+  PlatformTemplateSettings,
 } from './src/types';
 import { validateDeliverySlot } from './src/utils/deliverySlots';
 import {
@@ -199,6 +201,15 @@ function loadStoreData(): AppData {
     if (rawContent) {
       const parsed = JSON.parse(rawContent);
       if (parsed && typeof parsed === 'object') {
+        // Merge platform templates so new built-in templates (Vintage, Ultra-Premium, etc.) are always present
+        const existingTplMap = new Map<string, PlatformTemplate>((Array.isArray(parsed.platform_templates) ? parsed.platform_templates : []).map((t: PlatformTemplate) => [t.id, t]));
+        (initialData.platform_templates || []).forEach((initTpl: PlatformTemplate) => {
+          if (!existingTplMap.has(initTpl.id)) {
+            existingTplMap.set(initTpl.id, initTpl);
+          }
+        });
+        const mergedTemplates: PlatformTemplate[] = Array.from(existingTplMap.values());
+
         const loaded: AppData = {
           modules: Array.isArray(parsed.modules) ? parsed.modules : initialData.modules,
           categories: Array.isArray(parsed.categories) ? parsed.categories : initialData.categories,
@@ -210,7 +221,7 @@ function loadStoreData(): AppData {
           stores: Array.isArray(parsed.stores) ? parsed.stores : initialData.stores || [],
           settings: { ...initialData.settings, ...(parsed.settings || {}) },
           audit_logs: Array.isArray(parsed.audit_logs) ? parsed.audit_logs : initialData.audit_logs || [],
-          platform_templates: Array.isArray(parsed.platform_templates) ? parsed.platform_templates : initialData.platform_templates,
+          platform_templates: mergedTemplates,
           platform_template_settings: parsed.platform_template_settings || initialData.platform_template_settings,
           store_templates: Array.isArray(parsed.store_templates) ? parsed.store_templates : initialData.store_templates,
           market_categories: Array.isArray(parsed.market_categories) ? parsed.market_categories : initialData.market_categories,

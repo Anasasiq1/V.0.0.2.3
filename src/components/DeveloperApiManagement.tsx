@@ -15,6 +15,14 @@ import {
   XCircle,
   Clock,
   Layers,
+  Truck,
+  Store,
+  Terminal,
+  Play,
+  Zap,
+  Globe,
+  ArrowRight,
+  ExternalLink,
 } from 'lucide-react';
 import { ApiKey, ApiClientApp, WebhookSubscription, WebhookDeliveryLog, WebhookEvent } from '../types';
 
@@ -35,8 +43,16 @@ export const DeveloperApiManagement: React.FC<DeveloperApiManagementProps> = ({
   onUpdateData,
   theme = 'light',
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'overview' | 'keys' | 'clients' | 'webhooks' | 'docs'>('overview');
+  const [activeSubTab, setActiveSubTab] = useState<'overview' | 'keys' | 'clients' | 'connectors' | 'webhooks' | 'docs'>('overview');
   const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
+
+  // App Connector Quick-Setup State
+  const [selectedAppConnector, setSelectedAppConnector] = useState<'delivery' | 'customer' | 'store' | 'pos'>('delivery');
+  const [connectorSimUrl, setConnectorSimUrl] = useState('/api/v1/health');
+  const [connectorSimMethod, setConnectorSimMethod] = useState<'GET' | 'POST'>('GET');
+  const [connectorSimPayload, setConnectorSimPayload] = useState('{}');
+  const [connectorSimResponse, setConnectorSimResponse] = useState<any>(null);
+  const [connectorSimLoading, setConnectorSimLoading] = useState(false);
 
   // New Key Modal State
   const [showNewKeyModal, setShowNewKeyModal] = useState(false);
@@ -274,6 +290,16 @@ export const DeveloperApiManagement: React.FC<DeveloperApiManagementProps> = ({
               }`}
             >
               App Registry ({apiClients.length})
+            </button>
+            <button
+              onClick={() => setActiveSubTab('connectors')}
+              className={`px-3.5 py-2 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors ${
+                activeSubTab === 'connectors'
+                  ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200'
+              }`}
+            >
+              App Connectors (Delivery / Store / POS)
             </button>
             <button
               onClick={() => setActiveSubTab('webhooks')}
@@ -634,6 +660,324 @@ export const DeveloperApiManagement: React.FC<DeveloperApiManagementProps> = ({
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: APP CONNECTORS & SDKs */}
+      {activeSubTab === 'connectors' && (
+        <div className="space-y-6">
+          <div className="bg-gradient-to-r from-zinc-900 via-slate-900 to-zinc-900 text-white rounded-2xl p-6 border border-zinc-800 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-wider">
+                Native App SDK & API Connectors
+              </span>
+            </div>
+            <h3 className="text-lg font-bold text-white">External Mobile & Store App Connectors</h3>
+            <p className="text-xs text-zinc-300 max-w-3xl leading-relaxed">
+              Your deployed website functions directly as the central backend API server. Connect your Delivery Boy / Rider App, Customer Mobile App (Flutter / React Native), Merchant Store Panel App, and POS Terminals directly via secure API Keys.
+            </p>
+          </div>
+
+          {/* 4 Dedicated App Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 1. Delivery Partner / Rider App */}
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 space-y-4 hover:border-emerald-500/50 transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-xl">
+                    <Truck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-900 dark:text-white">Delivery Partner / Rider App</h4>
+                    <span className="text-[11px] text-zinc-500">Fleet tracking & order drop-off logistics</span>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold rounded-full">
+                  Endpoint Ready
+                </span>
+              </div>
+
+              <div className="p-3 bg-zinc-50 dark:bg-zinc-800/60 rounded-xl space-y-1.5 font-mono text-[11px]">
+                <p className="text-zinc-500 dark:text-zinc-400"># Primary API Endpoints:</p>
+                <p className="text-emerald-600 dark:text-emerald-400 font-semibold">GET /api/v1/delivery/riders</p>
+                <p className="text-emerald-600 dark:text-emerald-400 font-semibold">PATCH /api/v1/delivery/riders/:id/status</p>
+                <p className="text-zinc-600 dark:text-zinc-300">Required Scopes: delivery:manage, read:orders, write:orders</p>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  onClick={() => {
+                    setNewKeyName('Delivery Rider Fleet App');
+                    setNewKeyClient('Flutter Rider Mobile App');
+                    setSelectedScopes(['delivery:manage', 'read:orders', 'write:orders']);
+                    setShowNewKeyModal(true);
+                  }}
+                  className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+                >
+                  <Key className="w-3.5 h-3.5" />
+                  <span>1-Click Generate Rider Key</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setConnectorSimUrl('/api/v1/delivery/riders');
+                    setConnectorSimMethod('GET');
+                  }}
+                  className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                >
+                  <Play className="w-3 h-3" /> Test in Playground
+                </button>
+              </div>
+            </div>
+
+            {/* 2. Customer Mobile App */}
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 space-y-4 hover:border-blue-500/50 transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl">
+                    <Smartphone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-900 dark:text-white">Customer Mobile App</h4>
+                    <span className="text-[11px] text-zinc-500">Flutter / React Native Storefront</span>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-[10px] font-bold rounded-full">
+                  Endpoint Ready
+                </span>
+              </div>
+
+              <div className="p-3 bg-zinc-50 dark:bg-zinc-800/60 rounded-xl space-y-1.5 font-mono text-[11px]">
+                <p className="text-zinc-500 dark:text-zinc-400"># Primary API Endpoints:</p>
+                <p className="text-blue-600 dark:text-blue-400 font-semibold">GET /api/v1/products</p>
+                <p className="text-blue-600 dark:text-blue-400 font-semibold">POST /api/orders (Instant Order & WhatsApp Dispatch)</p>
+                <p className="text-zinc-600 dark:text-zinc-300">Required Scopes: read:products, read:orders, write:orders</p>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  onClick={() => {
+                    setNewKeyName('Customer Storefront App');
+                    setNewKeyClient('Customer Mobile App (iOS/Android)');
+                    setSelectedScopes(['read:products', 'read:orders', 'write:orders', 'read:stores']);
+                    setShowNewKeyModal(true);
+                  }}
+                  className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+                >
+                  <Key className="w-3.5 h-3.5" />
+                  <span>1-Click Generate Customer Key</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setConnectorSimUrl('/api/v1/products');
+                    setConnectorSimMethod('GET');
+                  }}
+                  className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                >
+                  <Play className="w-3 h-3" /> Test in Playground
+                </button>
+              </div>
+            </div>
+
+            {/* 3. Merchant / Store Owner App */}
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 space-y-4 hover:border-amber-500/50 transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl">
+                    <Store className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-900 dark:text-white">Store Owner / Vendor App</h4>
+                    <span className="text-[11px] text-zinc-500">Live order ring alerts & catalog control</span>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 text-[10px] font-bold rounded-full">
+                  Endpoint Ready
+                </span>
+              </div>
+
+              <div className="p-3 bg-zinc-50 dark:bg-zinc-800/60 rounded-xl space-y-1.5 font-mono text-[11px]">
+                <p className="text-zinc-500 dark:text-zinc-400"># Primary API Endpoints:</p>
+                <p className="text-amber-600 dark:text-amber-400 font-semibold">POST /api/store/login</p>
+                <p className="text-amber-600 dark:text-amber-400 font-semibold">GET /api/stores/:storeId/full-profile</p>
+                <p className="text-zinc-600 dark:text-zinc-300">Required Scopes: read:products, write:products, read:orders, write:stores</p>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  onClick={() => {
+                    setNewKeyName('Merchant Store App');
+                    setNewKeyClient('Store Owner Mobile Suite');
+                    setSelectedScopes(['read:products', 'write:products', 'read:orders', 'write:orders', 'read:stores']);
+                    setShowNewKeyModal(true);
+                  }}
+                  className="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+                >
+                  <Key className="w-3.5 h-3.5" />
+                  <span>1-Click Generate Merchant Key</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setConnectorSimUrl('/api/stores');
+                    setConnectorSimMethod('GET');
+                  }}
+                  className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1"
+                >
+                  <Play className="w-3 h-3" /> Test in Playground
+                </button>
+              </div>
+            </div>
+
+            {/* 4. In-Store POS Terminal App */}
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 space-y-4 hover:border-purple-500/50 transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 rounded-xl">
+                    <Terminal className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-900 dark:text-white">In-Store POS Terminal</h4>
+                    <span className="text-[11px] text-zinc-500">Barcode scanner, cashier billing & receipt printer</span>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-[10px] font-bold rounded-full">
+                  Endpoint Ready
+                </span>
+              </div>
+
+              <div className="p-3 bg-zinc-50 dark:bg-zinc-800/60 rounded-xl space-y-1.5 font-mono text-[11px]">
+                <p className="text-zinc-500 dark:text-zinc-400"># Primary API Endpoints:</p>
+                <p className="text-purple-600 dark:text-purple-400 font-semibold">POST /api/v1/pos/checkout</p>
+                <p className="text-purple-600 dark:text-purple-400 font-semibold">GET /api/v1/pos/transactions</p>
+                <p className="text-zinc-600 dark:text-zinc-300">Required Scopes: pos:manage, read:products</p>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  onClick={() => {
+                    setNewKeyName('POS Cashier Counter 1');
+                    setNewKeyClient('POS Billing Terminal');
+                    setSelectedScopes(['pos:manage', 'read:products']);
+                    setShowNewKeyModal(true);
+                  }}
+                  className="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors"
+                >
+                  <Key className="w-3.5 h-3.5" />
+                  <span>1-Click Generate POS Key</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setConnectorSimUrl('/api/v1/pos/transactions');
+                    setConnectorSimMethod('GET');
+                  }}
+                  className="text-xs font-semibold text-purple-600 dark:text-purple-400 hover:underline flex items-center gap-1"
+                >
+                  <Play className="w-3 h-3" /> Test in Playground
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Live Backend Playground */}
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-emerald-500" />
+                  Live Backend Connection Simulator
+                </h4>
+                <p className="text-xs text-zinc-500">
+                  Execute live requests against your website backend to verify response payloads for external apps.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <select
+                value={connectorSimMethod}
+                onChange={(e: any) => setConnectorSimMethod(e.target.value)}
+                className="w-full sm:w-28 px-3 py-2.5 text-xs font-bold bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-xl"
+              >
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+              </select>
+
+              <input
+                type="text"
+                value={connectorSimUrl}
+                onChange={(e) => setConnectorSimUrl(e.target.value)}
+                placeholder="/api/v1/health"
+                className="flex-1 w-full px-3.5 py-2.5 text-xs font-mono bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-300 dark:border-zinc-700 rounded-xl"
+              />
+
+              <button
+                disabled={connectorSimLoading}
+                onClick={async () => {
+                  setConnectorSimLoading(true);
+                  setConnectorSimResponse(null);
+                  try {
+                    const options: RequestInit = {
+                      method: connectorSimMethod,
+                      headers: { 'Content-Type': 'application/json' },
+                    };
+                    if (connectorSimMethod === 'POST') {
+                      try {
+                        options.body = JSON.stringify(JSON.parse(connectorSimPayload));
+                      } catch {
+                        options.body = connectorSimPayload;
+                      }
+                    }
+                    const res = await fetch(connectorSimUrl, options);
+                    const data = await res.json();
+                    setConnectorSimResponse(data);
+                  } catch (err: any) {
+                    setConnectorSimResponse({ error: err.message || 'Network request failed' });
+                  } finally {
+                    setConnectorSimLoading(false);
+                  }
+                }}
+                className="w-full sm:w-auto px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-white dark:text-zinc-900 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all"
+              >
+                {connectorSimLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
+                <span>Send Request</span>
+              </button>
+            </div>
+
+            {/* Quick URL Presets */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 text-[11px]">
+              <span className="text-zinc-400 font-medium whitespace-nowrap">Quick Presets:</span>
+              {[
+                { label: 'System Health', url: '/api/v1/health', method: 'GET' },
+                { label: 'Riders Fleet', url: '/api/v1/delivery/riders', method: 'GET' },
+                { label: 'POS History', url: '/api/v1/pos/transactions', method: 'GET' },
+                { label: 'Stores List', url: '/api/stores', method: 'GET' },
+                { label: 'Catalog Products', url: '/api/v1/products', method: 'GET' },
+              ].map((preset) => (
+                <button
+                  key={preset.url}
+                  onClick={() => {
+                    setConnectorSimUrl(preset.url);
+                    setConnectorSimMethod(preset.method as any);
+                  }}
+                  className="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg whitespace-nowrap font-mono"
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Response Preview */}
+            {connectorSimResponse && (
+              <div className="space-y-2 pt-2 animate-in fade-in">
+                <div className="flex items-center justify-between text-xs text-zinc-500">
+                  <span>Server JSON Response:</span>
+                  <span className="text-emerald-600 font-bold">Status: 200 OK</span>
+                </div>
+                <pre className="p-4 bg-zinc-950 text-emerald-400 rounded-xl font-mono text-xs max-h-72 overflow-y-auto overflow-x-auto border border-zinc-800">
+                  {JSON.stringify(connectorSimResponse, null, 2)}
+                </pre>
+              </div>
+            )}
           </div>
         </div>
       )}

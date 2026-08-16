@@ -5,5 +5,8 @@ export * from './core/TemplateRollbackManager';
 export * from './templates/HMQModernTemplate';
 export * from './templates/HMQClassicTemplate';
 export * from './templates/BlinkitStyleTemplate';
+export * from './templates/HMQVintageTemplate';
+export * from './templates/HMQUltraPremiumTemplate';
 export * from './preview/TemplatePreviewModal';
 export * from './importer/TemplateImportModal';
+
