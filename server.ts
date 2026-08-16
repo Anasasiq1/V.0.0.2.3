@@ -417,7 +417,11 @@ async function startServer() {
     if (mysqlReady) {
       const mysqlLoadedData = await loadDataFromMysql();
       if (mysqlLoadedData) {
-        storeData = sanitizeStoreData(mysqlLoadedData);
+        storeData = sanitizeStoreData({
+          ...storeData,
+          ...mysqlLoadedData,
+          settings: { ...storeData.settings, ...(mysqlLoadedData.settings || {}) },
+        });
         console.log('[MySQL] Application state successfully loaded from MySQL database.');
       } else {
         console.log('[MySQL] Database tables initialized. Seeding initial data to MySQL...');
@@ -3774,6 +3778,14 @@ Location: "${address || 'Local Town'}"`;
     });
   });
 
+
+  // 404 Handler for undefined API routes (ensures JSON error is returned instead of HTML)
+  app.all('/api/*', (req, res) => {
+    return res.status(404).json({
+      success: false,
+      error: `API route ${req.method} ${req.originalUrl} not found`,
+    });
+  });
 
   // Vite Middleware in dev mode / Static bundle in production
   if (process.env.NODE_ENV !== 'production') {
