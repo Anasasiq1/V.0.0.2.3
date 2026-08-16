@@ -1,0 +1,8 @@
+{
+  "name": "V.0.0.2.3",
+  "description": "WhatsApp Hyperlocal Store with custom reorderable modules, dynamic sizes, n8n webhook triggers, category management, backup \u0026 restore, and full admin suite.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

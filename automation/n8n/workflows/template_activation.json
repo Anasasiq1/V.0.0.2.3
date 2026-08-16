@@ -1,0 +1,44 @@
+{
+  "name": "HM-Q Template Activation Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "activate-template",
+        "options": {}
+      },
+      "name": "Webhook - Activate Template",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.body.app_url || 'http://localhost:3000'}}/api/platform/templates/activate",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"templateId\": \"{{$json.body.templateId}}\",\n  \"adminUsername\": \"{{$json.body.adminUsername || 'n8n_automation'}}\"\n}"
+      },
+      "name": "HTTP Request - HM-Q API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [320, 200]
+    }
+  ],
+  "connections": {
+    "Webhook - Activate Template": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - HM-Q API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {}
+}

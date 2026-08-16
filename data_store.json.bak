@@ -1,0 +1,165 @@
+{
+  "modules": [],
+  "categories": [],
+  "products": [],
+  "banners": [
+    {
+      "id": "ban-1",
+      "title": "Flat 20% OFF on Beauty Essentials",
+      "subtitle": "Skincare, serums & top personal care brands delivered in 15 mins.",
+      "btnText": "Shop Beauty",
+      "bgGradient": "linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%)",
+      "icon": "✨",
+      "linkModuleId": "mod-beauty"
+    },
+    {
+      "id": "ban-2",
+      "title": "Express Grocery Delivery",
+      "subtitle": "Farm fresh fruits, milk & daily snacks at your doorstep.",
+      "btnText": "Order Now",
+      "bgGradient": "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
+      "icon": "🥦",
+      "linkModuleId": "mod-grocery"
+    }
+  ],
+  "orders": [],
+  "users": [
+    {
+      "id": "usr-superadmin",
+      "username": "admin",
+      "password": "admin123",
+      "name": "System Super Admin",
+      "role": "super_admin",
+      "phone": "",
+      "active": true,
+      "permissions": {
+        "manage_products": true,
+        "manage_categories": true,
+        "manage_modules": true,
+        "manage_orders": true,
+        "manage_delivery_slots": true,
+        "manage_payment_settings": true,
+        "manage_pwa": true,
+        "manage_staff_roles": true,
+        "view_analytics": true
+      }
+    }
+  ],
+  "customers": [],
+  "stores": [
+    {
+      "id": "store-beauty",
+      "name": "Amit's Beauty Essentials",
+      "category": "Beauty & Personal Care",
+      "owner_name": "Amit Sharma",
+      "phone": "9847000001",
+      "whatsapp_phone": "919847000001",
+      "address": "Ghanshyam Nagar, Tirur",
+      "logo": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&auto=format&fit=crop&q=80",
+      "username": "beauty",
+      "password": "beauty123",
+      "active": true,
+      "registered_at": "2026-08-11T11:20:49.903Z",
+      "slug": "beauty",
+      "modules": [
+        "mod-grocery",
+        "mod-food",
+        "mod-supermarket",
+        "mod-beauty",
+        "mod-fashion",
+        "mod-meat",
+        "mod-electronics",
+        "mod-pharmacy",
+        "mod-bakery",
+        "mod-pets"
+      ],
+      "status": "ACTIVE"
+    },
+    {
+      "id": "store-grocery",
+      "name": "Priya's Grocery Mart",
+      "category": "Grocery & Staples",
+      "owner_name": "Priya Patel",
+      "phone": "9847000002",
+      "whatsapp_phone": "919847000002",
+      "address": "Ring Road, Tirur",
+      "logo": "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=500&auto=format&fit=crop&q=80",
+      "username": "grocery",
+      "password": "grocery123",
+      "active": true,
+      "registered_at": "2026-08-11T11:20:49.903Z",
+      "slug": "grocery",
+      "modules": [
+        "mod-grocery",
+        "mod-food",
+        "mod-supermarket",
+        "mod-beauty",
+        "mod-fashion",
+        "mod-meat",
+        "mod-electronics",
+        "mod-pharmacy",
+        "mod-bakery",
+        "mod-pets"
+      ],
+      "status": "ACTIVE"
+    }
+  ],
+  "settings": {
+    "n8n_webhook_url": "https://n8n.example.com/webhook/whatsapp-hyperlocal-order",
+    "store_name": "Pathampad Hyperlocal Store",
+    "delivery_address": "WVRW+J7M, Tirur, Kerala",
+    "admin_pin": "1234",
+    "admin_username": "admin",
+    "admin_password": "admin123",
+    "admin_login_banner": "https://images.unsplash.com/photo-1556742049-0a670f4a4591?w=1200&auto=format&fit=crop&q=80",
+    "admin_banner_title": "Hyperlocal Merchant Portal",
+    "admin_banner_subtitle": "Manage products, orders, inventory, delivery slots, and WhatsApp notifications seamlessly.",
+    "express_delivery_fee": 40,
+    "pwa_enabled": true,
+    "pwa_name": "Hyperlocal Store",
+    "pwa_short_name": "Hyperlocal",
+    "pwa_description": "Fastest 15-minute hyperlocal delivery store directly integrated with WhatsApp.",
+    "pwa_icon": "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=500&auto=format&fit=crop&q=80",
+    "pwa_theme_color": "#4338ca",
+    "pwa_bg_color": "#f8fafc",
+    "pwa_display_mode": "standalone",
+    "send_to_customer_whatsapp": true,
+    "whatsapp_support_enabled": true,
+    "whatsapp_mode": "both",
+    "customer_wa_auto_open": true,
+    "store_whatsapp_phone": "",
+    "super_admin_whatsapp_phone": "",
+    "cod_enabled": true,
+    "upi_enabled": true,
+    "upi_id": "",
+    "upi_phone": "",
+    "upi_payee_name": "Hyperlocal Commerce",
+    "upi_qr_image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&auto=format&fit=crop&q=80",
+    "delivery_slots": [
+      {
+        "id": "slot-1",
+        "time": "11:00 AM",
+        "label": "Morning Slot",
+        "fee": 0,
+        "isFree": true,
+        "isActive": true
+      },
+      {
+        "id": "slot-2",
+        "time": "12:00 PM",
+        "label": "Free Batch Delivery",
+        "fee": 0,
+        "isFree": true,
+        "isActive": true
+      },
+      {
+        "id": "slot-3",
+        "time": "05:00 PM",
+        "label": "Evening Batch",
+        "fee": 0,
+        "isFree": true,
+        "isActive": true
+      }
+    ]
+  }
+}

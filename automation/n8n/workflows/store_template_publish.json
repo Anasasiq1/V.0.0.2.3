@@ -1,0 +1,42 @@
+{
+  "name": "HM-Q Store Template Publish Notifier",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "publish-store-template",
+        "options": {}
+      },
+      "name": "Webhook - Store Publish",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.body.app_url || 'http://localhost:3000'}}/api/stores/{{$json.body.storeId}}/template/publish",
+        "method": "POST",
+        "options": {}
+      },
+      "name": "HTTP Request - Publish Store API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [320, 200]
+    }
+  ],
+  "connections": {
+    "Webhook - Store Publish": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Publish Store API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {}
+}

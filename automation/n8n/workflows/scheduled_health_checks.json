@@ -1,0 +1,46 @@
+{
+  "name": "HM-Q Scheduled Health Check",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "name": "Cron - Every 15 Min",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:3000/api/health",
+        "options": {}
+      },
+      "name": "HTTP Request - App Health Check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [320, 200]
+    }
+  ],
+  "connections": {
+    "Cron - Every 15 Min": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - App Health Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {}
+}

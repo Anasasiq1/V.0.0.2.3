@@ -1,0 +1,44 @@
+{
+  "name": "HM-Q Template Package Import & Validation Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "import-template",
+        "options": {}
+      },
+      "name": "Webhook - Import Package",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.body.app_url || 'http://localhost:3000'}}/api/platform/templates/import",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"template\": {{$json.body.template}}\n}"
+      },
+      "name": "HTTP Request - Validate & Import",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [320, 200]
+    }
+  ],
+  "connections": {
+    "Webhook - Import Package": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Validate & Import",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {}
+}
