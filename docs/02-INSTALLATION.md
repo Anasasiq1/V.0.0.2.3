@@ -1,71 +1,75 @@
-# 02 - Installation Guide
+# 02 - Installation & Deployment Guide
 
-This document provides complete instructions for installing and running the platform on a fresh Linux server or VPS environment.
-
----
-
-## Server Requirements
-
-- **Operating System**: Ubuntu 22.04 LTS / 24.04 LTS or Debian 11/12 (or aaPanel / Nginx / Cloud Run container)
-- **Node.js**: v18.x or v20.x LTS (Node.js 22 supported)
-- **Package Manager**: `npm` (v9+)
-- **Database** (Optional): MySQL 8.0+ / MariaDB 10.6+
-- **Process Manager**: PM2 or Systemd service manager
-- **Web Server**: Nginx or Apache with reverse proxy capabilities
+This document provides complete instructions for installing and running the platform under either of the two official deployment modes:
 
 ---
 
-## Step-by-Step Installation Procedure
+## 🎯 Choose Your Deployment Mode
 
-### Step 1: Clone or Extract Application Files
-```bash
-cd /var/www
-git clone <YOUR_REPOSITORY_URL> store-app
-cd store-app
-```
+| Feature | Mode A: File Manager (Static) | Mode B: Node.js (Full-Stack) |
+| :--- | :--- | :--- |
+| **Server Target** | aaPanel File Manager / cPanel `public_html` / Nginx / Apache | VPS / Dedicated Server / aaPanel Node.js / PM2 / Docker |
+| **Node.js on Server** | ❌ Not required | ✅ Required (v18, v20, v22) |
+| **Build Command** | `npm run build:static` | `npm run build` |
+| **Backend / MySQL API**| Client-side storefront / catalog mode | Full REST API, MySQL/JSON persistence, POS, n8n webhook |
+| **Port Configuration** | Default HTTP (80/443) | Dynamic `PORT` (`3000`, `3001`, `4302`, etc.) |
 
-### Step 2: Install Node.js Dependencies
+---
+
+## Mode A: File Manager / Static Website Deployment
+
+1. **Build the static site locally or in CI**:
+   ```bash
+   npm run build:static
+   ```
+2. **Compress `dist/` directory**:
+   Zip the contents of `dist/` (includes `index.html`, `assets/`, `.htaccess`, `_redirects`, `manifest.json`).
+3. **Upload to Server**:
+   Upload the zip to your aaPanel / cPanel web root (`/www/wwwroot/yourdomain.com/` or `/public_html/`) and extract it.
+4. **Open Domain**:
+   Open `https://yourdomain.com` in your browser.
+
+---
+
+## Mode B: Node.js Full Application Deployment
+
+### Step 1: Upload Source & Install Dependencies
 ```bash
+cd /var/www/store-app
 npm install
 ```
 
-### Step 3: Configure Environment Variables
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-Edit `.env` and set your configuration variables:
+### Step 2: Configure Environment Variables (`.env`)
 ```ini
-APP_URL=https://store-wa.hm-q.in
-PORT=3000
-GEMINI_API_KEY=<OPTIONAL_GEMINI_API_KEY>
+NODE_ENV=production
+PORT=4302
 
-# Optional MySQL Database settings
-MYSQL_HOST=localhost
-MYSQL_PORT=3306
-MYSQL_USER=<YOUR_DB_USER>
-MYSQL_PASSWORD=<YOUR_DB_PASSWORD>
-MYSQL_DATABASE=<YOUR_DB_NAME>
+# Optional MySQL Database
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=hmqin
+DB_USERNAME=hmquser
+DB_PASSWORD=your_secure_password
+
+# Optional n8n Webhook
+N8N_WEBHOOK_URL=https://n8n.yourdomain.com/webhook/orders
+N8N_WEBHOOK_SECRET=your_webhook_secret
 ```
 
-### Step 4: Verify Initial Data File Directory
-Ensure the directory `/data` exists and has read/write permissions:
+### Step 3: Build & Start Server
 ```bash
-mkdir -p data
-chmod -R 775 data
-```
-
-### Step 5: Build Production Bundle
-Build the Vite frontend and bundle `server.ts` with `esbuild`:
-```bash
+# Build frontend and server bundle
 npm run build
-```
-This produces compiled static files in `dist/` and the compiled server entry point at `dist/server.cjs`.
 
-### Step 6: Start Production Server with PM2
+# Start on any configured port (e.g. 3000, 3001, 4302)
+PORT=4302 NODE_ENV=production npm start
+```
+
+### Step 4: Run under PM2 Process Manager
 ```bash
 npm install -g pm2
-pm2 start dist/server.cjs --name "hyperlocal-store"
+pm2 start dist/server.cjs --name "hyperlocal-store" --env PORT=4302
 pm2 save
 pm2 startup
 ```
@@ -74,12 +78,12 @@ pm2 startup
 
 ## Verifying the Installation
 
-1. Test local health check:
+1. **Local Health Check (Node.js mode)**:
 ```bash
-curl http://localhost:3000/api/health
+curl http://localhost:4302/api/v1/health
 ```
-Expected response: `{"status":"ok","timestamp":"..."}`
+Expected response: `{"success":true,"status":"operational","capabilities":[...]}`
 
-2. Access Super Admin Panel at:
-`https://<YOUR-DOMAIN>/#admin` or click Admin in footer/header navigation.
-Default credentials provided in `.env` / initial config.
+2. **Access Admin Panel**:
+`https://<YOUR-DOMAIN>/#admin` or navigate to `/admin`.
+Default credentials provided in initial configuration. Change immediately upon deployment.

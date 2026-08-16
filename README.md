@@ -1,4 +1,4 @@
-# HM-Q Hyperlocal Commerce OS & Platform (V.0.0.2.4)
+# HM-Q Hyperlocal Commerce OS & Platform (V.0.0.2.3)
 
 A high-performance, multi-tenant hyperlocal commerce operating system supporting **Dual Deployment Architecture**, unified headless API Gateway (`/api/v1/*`), in-store POS cashier terminals, delivery fleet logistics, merchant SaaS tiers, and n8n webhook automation from a single unified codebase.
 
