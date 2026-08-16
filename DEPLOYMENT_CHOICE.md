@@ -46,3 +46,8 @@ See detailed guide: [FILE_MANAGER_DEPLOYMENT.md](./FILE_MANAGER_DEPLOYMENT.md)
 5. **Done!**
 
 See detailed guide: [NODE_JS_DEPLOYMENT.md](./NODE_JS_DEPLOYMENT.md)
+
+---
+
+## ⚡ aaPanel Users
+If you are using **aaPanel**, follow the step-by-step beginner guide: [AA_PANEL_QUICK_SETUP.md](./AA_PANEL_QUICK_SETUP.md)
